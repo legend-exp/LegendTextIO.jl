@@ -2,6 +2,14 @@ name = "LegendTextIO"
 uuid = "c397c909-374d-579b-8af3-fa3aa4f02e89"
 
 [deps]
+ArraysOfArrays = "65a8f2f4-9b39-5baf-92e2-a9cc46fdf018"
+BufferedStreams = "e1450e63-4bb3-523b-b2a4-4ffa8c0fd77d"
+CSV = "336ed68f-0bac-5ca0-87d4-7b16caf5d00b"
+LegendDataTypes = "99e09c13-5545-5ee2-bfa2-77f358fb75d8"
+DelimitedFiles = "8bb1440f-4735-579b-a4ab-409b98df4dab"
+RadiationDetectorSignals = "bf2c0563-65cf-5db2-a620-ceb7de82658c"
+StaticArrays = "90137ffa-7385-5640-81b9-e52037218182"
+Unitful = "1986cc42-f94f-5a68-af5c-568840ba703d"
 
 [extras]
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"

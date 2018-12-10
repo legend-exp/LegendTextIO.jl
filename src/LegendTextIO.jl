@@ -4,6 +4,19 @@ __precompile__(true)
 
 module LegendTextIO
 
-# package code goes here
+using DelimitedFiles
+
+using ArraysOfArrays
+using BufferedStreams
+using CSV
+using LegendDataTypes
+using RadiationDetectorSignals
+using StaticArrays
+using Unitful
+
+using RadiationDetectorSignals: group_by_evtno
+
+include("util.jl")
+include("geant4_csv.jl")
 
 end # module
