@@ -1,0 +1,10 @@
+name = "LegendTextIO"
+uuid = "c397c909-374d-579b-8af3-fa3aa4f02e89"
+
+[deps]
+
+[extras]
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+
+[targets]
+test = ["Test"]
