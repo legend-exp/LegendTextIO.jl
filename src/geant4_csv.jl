@@ -40,7 +40,7 @@ function Base.read(input::Geant4CSVInput)
     ncols::Int = 0
     reading_header::Bool = true
     while reading_header
-        c = Char(peek(input_stream))
+        c = Char(BufferedStreams.peek(input_stream))
         if c == '#'
             colname = _match_or_throw(colspec_expr, readline(input_stream))[2]
             ncols += 1
