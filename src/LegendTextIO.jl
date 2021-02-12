@@ -19,4 +19,15 @@ using RadiationDetectorSignals: group_by_evtno
 include("util.jl")
 include("geant4_csv.jl")
 
+## .root.hit files
+
+import Base, Tables
+
+using Mmap: mmap
+using Parsers
+
+export RootHitFile
+
+include("RootHitFiles.jl")
+
 end # module
