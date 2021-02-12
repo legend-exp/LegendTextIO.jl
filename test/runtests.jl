@@ -2,8 +2,8 @@
 
 using Test, LegendTextIO, Tables
 
-@testset "LegendTextIO.jl" begin
+Test.@testset "Package LegendTextIO" begin
 
-	include("RootHitFiles.jl")
+	include("test-root-hits.jl")
 
 end # LegendTextIO.jl

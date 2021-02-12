@@ -1,4 +1,4 @@
-@testset "RootHitFiles" begin
+@testset "RootHitFile" begin
 
     @testset "Construction" begin
         @test RootHitFile("test.root.hits") isa RootHitFile

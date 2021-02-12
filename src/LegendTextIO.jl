@@ -19,7 +19,7 @@ using RadiationDetectorSignals: group_by_evtno
 include("util.jl")
 include("geant4_csv.jl")
 
-## .root.hit files
+## .root.hits files
 
 import Base, Tables
 
@@ -28,6 +28,6 @@ using Parsers
 
 export RootHitFile
 
-include("RootHitFiles.jl")
+include("root-hits.jl")
 
 end # module
