@@ -1,16 +1,29 @@
 """
-    RootHitFile(file::Union{IOStream, AbstractString})
+    RootHitFile(file::Union{IOStream, AbstractString}; batch_size=10)
 
 represents a `.root.hits` file, which can be iterated or read to yield events, containg data
-on hits.
+on energy depositions, i.e. hits.
+
+A `RootHitFile` is also a Tables.jl compatible row table of events. `batch_size` determines
+the number of events grouped into partitions when `Tables.partitions` is used. To change the
+default of 10, see `DEFAULTS`.
 """
 struct RootHitFile
     stream::IOBuffer
+    batch_size::Int
+
+    function RootHitFile(stream::IOStream; batch_size=DEFAULTS.root_hits_batch_size)
+        new(IOBuffer(mmap(stream)), batch_size)
+    end
 end
 
-RootHitFile(stream::IOStream) = RootHitFile(IOBuffer(mmap(stream)))
-RootHitFile(path::AbstractString) = occursin(r".root.hits$", path) ? RootHitFile((open(path))) :
-    throw(ArgumentError("$path is not a .root.hits file"))
+function RootHitFile(path::AbstractString; batch_size=DEFAULTS.root_hits_batch_size)
+    if occursin(r".root.hits$", path)
+        return RootHitFile(open(path); batch_size=batch_size)
+    else
+        throw(ArgumentError("$path is not a .root.hits file"))
+    end
+end
 
 EventTuple = NamedTuple{
     (:eventnum, :primcount, :pos, :E, :time, :particleID, :trkID, :trkparentID, :volumeID),
@@ -69,3 +82,5 @@ Base.eltype(::RootHitFile) = EventTuple
 
 Tables.isrowtable(::Type{RootHitFile}) = true
 Tables.schema(f::RootHitFile) = Tables.Schema(eltype(f))
+
+Tables.partitions(f::RootHitFile) = Iterators.partition(f, f.batch_size)

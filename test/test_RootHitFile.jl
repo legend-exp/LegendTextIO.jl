@@ -112,4 +112,25 @@
         rtbl = rowtable(RootHitFile("test.root.hits"))
         @test first(rtbl) == first(RootHitFile("test.root.hits"))
     end
+
+    @testset "Partitions" begin
+        @test LegendTextIO.DEFAULTS.root_hits_batch_size == 10
+
+        LegendTextIO.DEFAULTS.root_hits_batch_size = 3
+
+        @test LegendTextIO.DEFAULTS.root_hits_batch_size == 3
+
+        p1 = collect(Tables.partitions(RootHitFile("test.root.hits")))
+
+        LegendTextIO.DEFAULTS.root_hits_batch_size = 10
+
+        p2 = collect(Tables.partitions(RootHitFile("test.root.hits", batch_size=3)))
+        p3 = collect(Iterators.partition(RootHitFile("test.root.hits"), 3))
+
+        @test length(p1) == length(p2) == length(p3)
+
+        for (tbl1, tbl2, tbl3) in zip(p1, p2, p3)
+            @test tbl1 == tbl2 == tbl3
+        end
+    end
 end
