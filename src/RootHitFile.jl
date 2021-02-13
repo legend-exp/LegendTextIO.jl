@@ -78,7 +78,7 @@ end
 
 Base.IteratorSize(::Type{RootHitFile}) = Base.SizeUnknown()
 Base.IteratorEltype(::Type{RootHitFile}) = Base.HasEltype()
-Base.eltype(::RootHitFile) = EventTuple
+Base.eltype(::Type{RootHitFile}) = EventTuple
 
 Tables.isrowtable(::Type{RootHitFile}) = true
 Tables.schema(f::RootHitFile) = Tables.Schema(eltype(f))
