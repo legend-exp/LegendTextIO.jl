@@ -28,6 +28,12 @@ using Parsers
 
 export RootHitFile
 
-include("root-hits.jl")
+include("RootHitFile.jl")
+
+mutable struct Defaults
+	root_hits_batch_size::Int
+end
+
+const DEFAULTS = Defaults(10)
 
 end # module
