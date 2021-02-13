@@ -77,15 +77,22 @@
 
     @testset "Iteration" begin
         f = RootHitFile("test.root.hits")
+        T = typeof(first(RootHitFile("test.root.hits")))
+
         for e in RootHitFile("test.root.hits")
             @test e == read(f)
+
+            @test typeof(e) == T
         end
+
+        
 
         @test Base.IteratorSize(RootHitFile) == Base.SizeUnknown()
 
         @test Base.IteratorEltype(RootHitFile) == Base.HasEltype()
 
         @test eltype(RootHitFile("test.root.hits")) <: NamedTuple
+        @test eltype(RootHitFile("test.root.hits")) == T
     end
 
     @testset "File Interface" begin
@@ -128,9 +135,13 @@
         p3 = collect(Iterators.partition(RootHitFile("test.root.hits"), 3))
 
         @test length(p1) == length(p2) == length(p3)
+        @test eltype(p1) == eltype(p2) == eltype(p3)
+
+        @test eltype(p1) <: Vector{<:NamedTuple}
 
         for (tbl1, tbl2, tbl3) in zip(p1, p2, p3)
             @test tbl1 == tbl2 == tbl3
+            @test all(isa.((tbl1, tbl2, tbl3), Vector{<:NamedTuple}))
         end
     end
 end
