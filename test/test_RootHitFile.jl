@@ -141,7 +141,6 @@
 
         for (tbl1, tbl2, tbl3) in zip(p1, p2, p3)
             @test tbl1 == tbl2 == tbl3
-            @test all(isa.((tbl1, tbl2, tbl3), Vector{<:NamedTuple}))
         end
     end
 end
