@@ -35,6 +35,8 @@ const RootHitEventTuple = NamedTuple{
     }
 }
 
+# TODO: Add documentation for this ^
+
 function Base.read(f::RootHitFile)
     eventnum  = Parsers.parse(Int32, f.stream)
     hitcount  = Parsers.parse(Int32, f.stream)
