@@ -1,23 +1,23 @@
 """
-    RootHitFile(file::Union{IOStream, AbstractString}; batch_size=10)
+    RootHitFile(file::Union{IOStream, AbstractString}; batch_size::Integer=10)
 
 represents a `.root.hits` file, which can be iterated or read to yield events, containg data
 on energy depositions, i.e. hits.
 
 A `RootHitFile` is also a Tables.jl compatible row table of events. `batch_size` determines
 the number of events grouped into partitions when `Tables.partitions` is used. To change the
-default of 10, see `DEFAULTS`.
+default of 10, see `ROOT_HITS_BATCH_SIZE`.
 """
 struct RootHitFile
     stream::IOBuffer
     batch_size::Int
 
-    function RootHitFile(stream::IOStream; batch_size=DEFAULTS.root_hits_batch_size)
+    function RootHitFile(stream::IOStream; batch_size=ROOT_HITS_BATCH_SIZE[])
         new(IOBuffer(mmap(stream)), batch_size)
     end
 end
 
-function RootHitFile(path::AbstractString; batch_size=DEFAULTS.root_hits_batch_size)
+function RootHitFile(path::AbstractString; batch_size=ROOT_HITS_BATCH_SIZE[])
     if occursin(r".root.hits$", path)
         return RootHitFile(open(path); batch_size=batch_size)
     else
@@ -25,7 +25,9 @@ function RootHitFile(path::AbstractString; batch_size=DEFAULTS.root_hits_batch_s
     end
 end
 
-EventTuple = NamedTuple{
+const ROOT_HITS_BATCH_SIZE = Ref(10)
+
+const RootHitEventTuple = NamedTuple{
     (:eventnum, :primcount, :pos, :E, :time, :particleID, :trkID, :trkparentID, :volumeID),
     Tuple{
         Int32, Int32, Vector{NTuple{3, Float32}}, Vector{Float32}, Vector{Float32},
@@ -63,7 +65,7 @@ function Base.read(f::RootHitFile)
         volumeID[i]    = String(readuntil(f.stream, UInt8('\n')))
     end
 
-    return EventTuple((
+    return RootHitEventTuple((
         eventnum, primcount, pos, E, time,
         particleID, trkID, trkparentID, volumeID
     ))
@@ -78,7 +80,7 @@ end
 
 Base.IteratorSize(::Type{RootHitFile}) = Base.SizeUnknown()
 Base.IteratorEltype(::Type{RootHitFile}) = Base.HasEltype()
-Base.eltype(::Type{RootHitFile}) = EventTuple
+Base.eltype(::Type{RootHitFile}) = RootHitEventTuple
 
 Tables.isrowtable(::Type{RootHitFile}) = true
 Tables.schema(f::RootHitFile) = Tables.Schema(eltype(f))
