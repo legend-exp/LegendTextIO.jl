@@ -121,15 +121,15 @@
     end
 
     @testset "Partitions" begin
-        @test LegendTextIO.DEFAULTS.root_hits_batch_size == 10
+        @test LegendTextIO.ROOT_HITS_BATCH_SIZE[] == 10
 
-        LegendTextIO.DEFAULTS.root_hits_batch_size = 3
+        LegendTextIO.ROOT_HITS_BATCH_SIZE[] = 3
 
-        @test LegendTextIO.DEFAULTS.root_hits_batch_size == 3
+        @test LegendTextIO.ROOT_HITS_BATCH_SIZE[] == 3
 
         p1 = collect(Tables.partitions(RootHitFile("test.root.hits")))
 
-        LegendTextIO.DEFAULTS.root_hits_batch_size = 10
+        LegendTextIO.ROOT_HITS_BATCH_SIZE[] = 10
 
         p2 = collect(Tables.partitions(RootHitFile("test.root.hits", batch_size=3)))
         p3 = collect(Iterators.partition(RootHitFile("test.root.hits"), 3))

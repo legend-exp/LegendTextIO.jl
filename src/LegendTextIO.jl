@@ -28,6 +28,6 @@ using Parsers
 
 export RootHitFile
 
-include("RootHitFile.jl")
+include("root_hits.jl")
 
 end # module
