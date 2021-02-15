@@ -30,7 +30,7 @@ const ROOT_HITS_BATCH_SIZE = Ref(10)
 const RootHitEventTuple = NamedTuple{
     (:eventnum, :primcount, :pos, :E, :time, :particleID, :trkID, :trkparentID, :volumeID),
     Tuple{
-        Int32, Int32, Vector{NTuple{3, Float32}}, Vector{Float32}, Vector{Float32},
+        Int32, Int32, Vector{SVector{3, Float32}}, Vector{Float32}, Vector{Float32},
         Vector{Int32}, Vector{Int32}, Vector{Int32}, Vector{String}
     }
 }
@@ -45,7 +45,7 @@ function Base.read(f::RootHitFile)
     # skip newline
     skip(f.stream, 1)
 
-    pos         = Vector{NTuple{3, Float32}}(undef, hitcount)
+    pos         = Vector{SVector{3, Float32}}(undef, hitcount)
     E           = Vector{            Float32}(undef, hitcount)
     time        = Vector{            Float32}(undef, hitcount)
     particleID  = Vector{              Int32}(undef, hitcount)
@@ -54,7 +54,7 @@ function Base.read(f::RootHitFile)
     volumeID    = Vector{             String}(undef, hitcount)
 
     @inbounds for i in 1:hitcount
-        pos[i] = (
+        pos[i] = SVector{3, Float32}(
             Parsers.parse(Float32, f.stream),
             Parsers.parse(Float32, f.stream),
             Parsers.parse(Float32, f.stream)
