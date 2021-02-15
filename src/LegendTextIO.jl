@@ -25,6 +25,7 @@ import Base, Tables
 
 using Mmap: mmap
 using Parsers
+using TypedTables
 
 export RootHitFile
 
