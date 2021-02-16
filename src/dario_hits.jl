@@ -1,8 +1,8 @@
 """
     DarioHitsFile(file::Union{IOStream, AbstractString}; batch_size::Integer=10)
 
-represents a `.root.hits` file, given by MaGe's Dario output scheme. A `DarioHitsFile`
-can be iterated or read to yield events, containg data on energy depositions, i.e. hits.
+represents a `.root.hits` file given by MaGe's Dario output scheme. A `DarioHitsFile` can be
+iterated or read to yield events, which contain data on energy depositions, i.e. hits.
 
 A `DarioHitsFile` is also a Tables.jl compatible row table of events. `batch_size`
 determines the number of events grouped into partitions when `Tables.partitions` is used.
