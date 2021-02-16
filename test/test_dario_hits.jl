@@ -1,18 +1,18 @@
-@testset "RootHitFile" begin
+@testset "DarioHitsFile" begin
 
     @testset "Construction" begin
-        @test RootHitFile("test.root.hits") isa RootHitFile
+        @test DarioHitsFile("test.root.hits") isa DarioHitsFile
 
-        @test RootHitFile(open("test.root.hits")) isa RootHitFile
+        @test DarioHitsFile(open("test.root.hits")) isa DarioHitsFile
 
-        @test all(RootHitFile(open("test.root.hits")) .== RootHitFile("test.root.hits"))
+        @test all(DarioHitsFile(open("test.root.hits")) .== DarioHitsFile("test.root.hits"))
 
         # Not a .root.hits file
-        @test_throws ArgumentError RootHitFile("../Project.toml")
+        @test_throws ArgumentError DarioHitsFile("../Project.toml")
     end
 
     @testset "Parsing" begin
-        f = RootHitFile("test.root.hits")
+        f = DarioHitsFile("test.root.hits")
 
         e1 = read(f)
         @test e1.eventnum == 624
@@ -76,10 +76,10 @@
     end
 
     @testset "Iteration" begin
-        f = RootHitFile("test.root.hits")
-        T = typeof(first(RootHitFile("test.root.hits")))
+        f = DarioHitsFile("test.root.hits")
+        T = typeof(first(DarioHitsFile("test.root.hits")))
 
-        for e in RootHitFile("test.root.hits")
+        for e in DarioHitsFile("test.root.hits")
             @test e == read(f)
 
             @test typeof(e) == T
@@ -87,16 +87,16 @@
 
         
 
-        @test Base.IteratorSize(RootHitFile) == Base.SizeUnknown()
+        @test Base.IteratorSize(DarioHitsFile) == Base.SizeUnknown()
 
-        @test Base.IteratorEltype(RootHitFile) == Base.HasEltype()
+        @test Base.IteratorEltype(DarioHitsFile) == Base.HasEltype()
 
-        @test eltype(RootHitFile("test.root.hits")) <: NamedTuple
-        @test eltype(RootHitFile("test.root.hits")) == T
+        @test eltype(DarioHitsFile("test.root.hits")) <: NamedTuple
+        @test eltype(DarioHitsFile("test.root.hits")) == T
     end
 
     @testset "File Interface" begin
-        f = RootHitFile("test.root.hits")
+        f = DarioHitsFile("test.root.hits")
 
         @test eof(f) == false
 
@@ -106,7 +106,7 @@
     end
 
     @testset "Tables Interface" begin
-        f = RootHitFile("test.root.hits")
+        f = DarioHitsFile("test.root.hits")
 
         @test Tables.istable(typeof(f))
 
@@ -116,23 +116,23 @@
         ctbl = columntable(f)
         @test ctbl.eventnum == [624, 632, 1150, 1266, 1447, 1488, 1559]
 
-        rtbl = rowtable(RootHitFile("test.root.hits"))
-        @test first(rtbl) == first(RootHitFile("test.root.hits"))
+        rtbl = rowtable(DarioHitsFile("test.root.hits"))
+        @test first(rtbl) == first(DarioHitsFile("test.root.hits"))
     end
 
     @testset "Partitions" begin
-        @test LegendTextIO.ROOT_HITS_BATCH_SIZE[] == 10
+        @test LegendTextIO.DARIO_HITS_BATCH_SIZE[] == 10
 
-        LegendTextIO.ROOT_HITS_BATCH_SIZE[] = 3
+        LegendTextIO.DARIO_HITS_BATCH_SIZE[] = 3
 
-        @test LegendTextIO.ROOT_HITS_BATCH_SIZE[] == 3
+        @test LegendTextIO.DARIO_HITS_BATCH_SIZE[] == 3
 
-        p1 = collect(Tables.partitions(RootHitFile("test.root.hits")))
+        p1 = collect(Tables.partitions(DarioHitsFile("test.root.hits")))
 
-        LegendTextIO.ROOT_HITS_BATCH_SIZE[] = 10
+        LegendTextIO.DARIO_HITS_BATCH_SIZE[] = 10
 
-        p2 = collect(Tables.partitions(RootHitFile("test.root.hits", batch_size=3)))
-        p3 = collect(Iterators.partition(RootHitFile("test.root.hits"), 3))
+        p2 = collect(Tables.partitions(DarioHitsFile("test.root.hits", batch_size=3)))
+        p3 = collect(Iterators.partition(DarioHitsFile("test.root.hits"), 3))
 
         @test length(p1) == length(p2) == length(p3)
         @test eltype(p1) == eltype(p2) == eltype(p3)

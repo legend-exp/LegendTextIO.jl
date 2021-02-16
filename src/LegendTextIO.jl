@@ -26,8 +26,8 @@ import Base, Tables
 using Mmap: mmap
 using Parsers
 
-export RootHitFile
+export DarioHitsFile
 
-include("root_hits.jl")
+include("dario_hits.jl")
 
 end # module

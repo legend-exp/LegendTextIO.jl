@@ -4,6 +4,6 @@ using Test, LegendTextIO, Tables
 
 Test.@testset "Package LegendTextIO" begin
 
-	include("test_root_hits.jl")
+	include("test_dario_hits.jl")
 
 end # LegendTextIO.jl
