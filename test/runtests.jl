@@ -1,8 +1,9 @@
 # This file is a part of LegendTextIO.jl, licensed under the MIT License (MIT).
 
-import Test
+using Test, LegendTextIO, Tables
+
 Test.@testset "Package LegendTextIO" begin
 
-# test code goes here
+	include("test_dario_hits.jl")
 
-end # testset
+end # LegendTextIO.jl
