@@ -75,7 +75,8 @@ function Base.read(input::Geant4CSVInput)
     evtno = Int32.(data[:, colno_evtno])
     edep = Float32.(data[:, colno_edep]) .* u"keV"
     pos_mat = Float32.(data[:, colno_xyz]) .* u"mm"
-    pos = nestedview(Array(pos_mat'), SVector{3})
+    pos_data = Array(pos_mat')
+    pos = reinterpret(reshape, SVector{3, eltype(pos_data)}, pos_data)
 
     detno = colno_detno != 0 ? Int32.(data[:, colno_detno]) : fill!(similar(evtno), 1)
     thit = (colno_thit != 0 ? Float32.(data[:, colno_thit]) : fill!(similar(evtno, Float32), NaN)) .* u"s"
