@@ -1,9 +1,10 @@
 # This file is a part of LegendTextIO.jl, licensed under the MIT License (MIT).
 
 using Test, LegendTextIO, Tables
+using LegendTestData
 
 Test.@testset "Package LegendTextIO" begin
 
-# include("test_dario_hits.jl")
+include("test_dario_hits.jl")
 
 end # LegendTextIO.jl

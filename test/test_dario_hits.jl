@@ -1,18 +1,20 @@
+const hitsfile = joinpath(legend_test_data_path(), "data", "mage", "dario", "test.root.hits")
+
 @testset "DarioHitsFile" begin
 
     @testset "Construction" begin
-        @test DarioHitsFile("test.root.hits") isa DarioHitsFile
+        @test DarioHitsFile(hitsfile) isa DarioHitsFile
 
-        @test DarioHitsFile(open("test.root.hits")) isa DarioHitsFile
+        @test DarioHitsFile(open(hitsfile)) isa DarioHitsFile
 
-        @test all(DarioHitsFile(open("test.root.hits")) .== DarioHitsFile("test.root.hits"))
+        @test all(DarioHitsFile(open(hitsfile)) .== DarioHitsFile(hitsfile))
 
         # Not a .root.hits file
         @test_throws ArgumentError DarioHitsFile("../Project.toml")
     end
 
     @testset "Parsing" begin
-        f = DarioHitsFile("test.root.hits")
+        f = DarioHitsFile(hitsfile)
 
         e1 = read(f)
         @test e1.eventnum == 624
@@ -55,31 +57,31 @@
         @test e2.volumeID[end]    == "physiDet"
 
         ef = collect(f)[end]
-        @test ef.eventnum == 1559
-        @test ef.primcount == 5
+        @test ef.eventnum == 999851
+        @test ef.primcount == 4
 
-        @test all(ef.pos[1]     .≈ (-0.109196, 2.10771, -196.751))
-        @test ef.E[1]            ≈ 0.03819
+        @test all(ef.pos[1]     .≈ (-1.2325, -2.44103, -196.814))
+        @test ef.E[1]            ≈ 0.07764
         @test ef.time[1]        == 0
         @test ef.particleID[1]  == 22
-        @test ef.trkID[1]       == 10
-        @test ef.trkparentID[1] == 7
+        @test ef.trkID[1]       == 9
+        @test ef.trkparentID[1] == 6
         @test ef.volumeID[1]    == "physiDet"
 
-        @test all(ef.pos[end]     .≈ (-1.02351, 2.28199, -198.087))
-        @test ef.E[end]            ≈ 9.71922
+        @test all(ef.pos[end]     .≈ (-1.18915, -2.28214, -198.958))
+        @test ef.E[end]            ≈ 8.4419
         @test ef.time[end]        == 0
         @test ef.particleID[end]  == 11
-        @test ef.trkID[end]       == 111
+        @test ef.trkID[end]       == 165
         @test ef.trkparentID[end] == 16
         @test ef.volumeID[end]    == "physiDet"
     end
 
     @testset "Iteration" begin
-        f = DarioHitsFile("test.root.hits")
-        T = typeof(first(DarioHitsFile("test.root.hits")))
+        f = DarioHitsFile(hitsfile)
+        T = typeof(first(DarioHitsFile(hitsfile)))
 
-        for e in DarioHitsFile("test.root.hits")
+        for e in DarioHitsFile(hitsfile)
             @test e == read(f)
 
             @test typeof(e) == T
@@ -91,12 +93,12 @@
 
         @test Base.IteratorEltype(DarioHitsFile) == Base.HasEltype()
 
-        @test eltype(DarioHitsFile("test.root.hits")) <: NamedTuple
-        @test eltype(DarioHitsFile("test.root.hits")) == T
+        @test eltype(DarioHitsFile(hitsfile)) <: NamedTuple
+        @test eltype(DarioHitsFile(hitsfile)) == T
     end
 
     @testset "File Interface" begin
-        f = DarioHitsFile("test.root.hits")
+        f = DarioHitsFile(hitsfile)
 
         @test eof(f) == false
 
@@ -106,7 +108,7 @@
     end
 
     @testset "Tables Interface" begin
-        f = DarioHitsFile("test.root.hits")
+        f = DarioHitsFile(hitsfile)
 
         @test Tables.istable(typeof(f))
 
@@ -114,10 +116,13 @@
         @test Tables.rows(f) === f
 
         ctbl = columntable(f)
-        @test ctbl.eventnum == [624, 632, 1150, 1266, 1447, 1488, 1559]
+        @test ctbl.eventnum == [
+            624, 632, 1150, 1266, 1447, 1488, 1559, 1646, 2068, 2075, 2246,
+            2467, 2619, 3053, 3430, 4388, 4721, 5118, 5395, 5484, 53276, 999851
+        ]
 
-        rtbl = rowtable(DarioHitsFile("test.root.hits"))
-        @test first(rtbl) == first(DarioHitsFile("test.root.hits"))
+        rtbl = rowtable(DarioHitsFile(hitsfile))
+        @test first(rtbl) == first(DarioHitsFile(hitsfile))
     end
 
     @testset "Partitions" begin
@@ -127,12 +132,12 @@
 
         @test LegendTextIO.DARIO_HITS_BATCH_SIZE[] == 3
 
-        p1 = collect(Tables.partitions(DarioHitsFile("test.root.hits")))
+        p1 = collect(Tables.partitions(DarioHitsFile(hitsfile)))
 
         LegendTextIO.DARIO_HITS_BATCH_SIZE[] = 10
 
-        p2 = collect(Tables.partitions(DarioHitsFile("test.root.hits", batch_size=3)))
-        p3 = collect(Iterators.partition(DarioHitsFile("test.root.hits"), 3))
+        p2 = collect(Tables.partitions(DarioHitsFile(hitsfile, batch_size=3)))
+        p3 = collect(Iterators.partition(DarioHitsFile(hitsfile), 3))
 
         @test length(p1) == length(p2) == length(p3)
         @test eltype(p1) == eltype(p2) == eltype(p3)
