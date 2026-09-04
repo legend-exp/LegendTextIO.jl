@@ -22,7 +22,6 @@ include("geant4_csv.jl")
 import Base, Tables
 
 using Mmap: mmap
-using Parsers
 
 export DarioHitsFile
 

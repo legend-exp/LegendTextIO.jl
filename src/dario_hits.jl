@@ -38,12 +38,7 @@ const DarioHitsEventTuple = NamedTuple{
 # TODO: Add documentation for this ^
 
 function Base.read(f::DarioHitsFile)
-    eventnum  = Parsers.parse(Int32, f.stream)
-    hitcount  = Parsers.parse(Int32, f.stream)
-    primcount = Parsers.parse(Int32, f.stream)
-
-    # skip newline
-    skip(f.stream, 1)
+    eventnum, hitcount, primcount = map(s -> parse(Int32, s), split(readline(f.stream)))
 
     pos         = Vector{SVector{3, Float32}}(undef, hitcount)
     E           = Vector{            Float32}(undef, hitcount)
@@ -54,17 +49,14 @@ function Base.read(f::DarioHitsFile)
     volumeID    = Vector{             String}(undef, hitcount)
 
     @inbounds for i in 1:hitcount
-        pos[i] = SVector{3, Float32}(
-            Parsers.parse(Float32, f.stream),
-            Parsers.parse(Float32, f.stream),
-            Parsers.parse(Float32, f.stream)
-        )
-        E[i]           = Parsers.parse(Float32, f.stream)
-        time[i]        = Parsers.parse(Float32, f.stream)
-        particleID[i]  = Parsers.parse(Int32, f.stream)
-        trkID[i]       = Parsers.parse(Int32, f.stream)
-        trkparentID[i] = Parsers.parse(Int32, f.stream)
-        volumeID[i]    = String(readuntil(f.stream, UInt8('\n')))
+        x, y, z, e, t, pid, tid, tpid, vol = eachsplit(readline(f.stream))
+        pos[i]         = SVector{3, Float32}(parse(Float32, x), parse(Float32, y), parse(Float32, z))
+        E[i]           = parse(Float32, e)
+        time[i]        = parse(Float32, t)
+        particleID[i]  = parse(Int32, pid)
+        trkID[i]       = parse(Int32, tid)
+        trkparentID[i] = parse(Int32, tpid)
+        volumeID[i]    = String(vol)
     end
 
     return DarioHitsEventTuple((
